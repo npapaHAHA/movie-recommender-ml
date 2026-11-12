@@ -47,7 +47,7 @@ curl.exe --fail-with-body "http://127.0.0.1:8000/recommendations?user_id=6040&k=
 
 Дата разбиения, размеры выборок, размер каталога и метрики есть в [отчёте](metrics.json).
 
-## Повторить оценку
+## Повторить оценку и запустить тесты
 
 В Windows запустите PowerShell с Python 3.13.
 
@@ -56,11 +56,13 @@ py -3.13 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python.exe download_data.py
 .\.venv\Scripts\python.exe evaluate.py --user-id 6040 --model-output artifacts/recommender.joblib
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m uvicorn api:app
 ~~~
 
 На Linux и macOS используйте `python3.13 -m venv .venv` и `.venv/bin/python`.
 
+Тесты работают на небольших синтетических данных. Они проверяют разбиение по времени, метрики, порядок выдачи, исключение уже оценённых фильмов и ответы API. Затем [GitHub Actions](.github/workflows/ci.yml) собирает контейнер на MovieLens 1M и выполняет запрос из README.
 
 ## Источник данных
 
